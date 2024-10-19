@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { FaBomb } from "react-icons/fa";
+import { IoFlagSharp } from "react-icons/io5";
 import "./App.css";
 import CreationForm from "./components/CreationForm";
 
 type Cell = {
   isOpened: boolean;
+  isFlagged: boolean;
   minesNear: number;
   isBomb: boolean;
 };
@@ -46,6 +48,16 @@ function App() {
     }
   }
 
+  function setFlag(rowIndex: number, cellIndex: number) {
+    const newTable = [...table];
+    if (newTable[rowIndex][cellIndex]) {
+      const newCell = newTable[rowIndex][cellIndex];
+      newCell.isFlagged = !newCell.isFlagged;
+      newTable[rowIndex][cellIndex] = newCell;
+      setTable(newTable);
+    }
+  }
+
   return (
     <main className="text-center bg-lime-300 w-full h-[100vh] flex flex-col items-center justify-center">
       <h1 className="text-5xl mb-24 text-blue-500 font-extrabold">
@@ -54,7 +66,12 @@ function App() {
       <div className="text-green-500 flex items-center justify-center">
         <CreationForm generateTable={generateTable} />
         <div>
-          <table className="rounded-lg">
+          <table
+            className="rounded-lg"
+            onContextMenu={(e) => {
+              e.preventDefault();
+            }}
+          >
             <tbody>
               {table
                 ? table.map((row, rowIndex) => {
@@ -71,6 +88,9 @@ function App() {
                                 className={`w-8 h-8 ${
                                   cell.isBomb && "bg-red-500 text-black"
                                 } flex items-center justify-center border border-white`}
+                                onContextMenu={() =>
+                                  setFlag(rowIndex, cellIndex)
+                                }
                               >
                                 {cell.isBomb ? <FaBomb /> : cell.minesNear}
                               </td>
@@ -83,7 +103,16 @@ function App() {
                                   isOngoing && openCell(rowIndex, cellIndex)
                                 }
                                 className="bg-green-500 w-8 h-8 border border-white flex items-center justify-center"
-                              ></td>
+                                onContextMenu={() =>
+                                  setFlag(rowIndex, cellIndex)
+                                }
+                              >
+                                {cell.isFlagged ? (
+                                  <IoFlagSharp color="red" />
+                                ) : (
+                                  ""
+                                )}
+                              </td>
                             );
                           }
                         })}
@@ -112,6 +141,7 @@ function generateCell(): Cell {
   const newCell: Cell = {
     isOpened: false,
     isBomb: Boolean(Math.round(Math.random() - 0.3)),
+    isFlagged: false,
     minesNear: 0,
   };
   return newCell;
