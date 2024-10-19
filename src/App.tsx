@@ -1,5 +1,7 @@
 import { useState } from "react";
+import { FaBomb } from "react-icons/fa";
 import "./App.css";
+import CreationForm from "./components/CreationForm";
 
 type Cell = {
   isOpened: boolean;
@@ -13,15 +15,17 @@ type Table = Row[];
 
 function App() {
   const [table, setTable] = useState<Table>([]);
+  const [isOngoing, setIsOngoing] = useState<boolean>(false);
 
-  function generateTable(size: number) {
+  function generateTable(rows: number, cols: number) {
     setTable([]);
     const initialTable: Table = [];
-    for (let i = 0; i < size; i++) {
-      const row = generateRow(size);
+    for (let i = 0; i < rows; i++) {
+      const row = generateRow(cols);
       initialTable.push(row);
     }
     setTable(initialTable);
+    setIsOngoing(true);
   }
 
   function openCell(rowIndex: number, cellIndex: number) {
@@ -32,9 +36,8 @@ function App() {
       if (!newCell.isBomb) {
         newCell.minesNear = countNearBombs(newTable, rowIndex, cellIndex);
       } else {
-        setTable([]);
-        alert("Game over");
-        generateTable(10);
+        setTable(showBombs(table));
+        setIsOngoing(false);
       }
 
       newCell.isOpened = true;
@@ -44,55 +47,61 @@ function App() {
   }
 
   return (
-    <div className="bg-lime-300 w-full h-[100vh] text-green-500 flex items-center justify-center">
-      <button
-        onClick={() => generateTable(10)}
-        className="bg-red-500 rounded-xl text-white p-3"
-      >
-        Create
-      </button>
-      <div>
-        <table className="rounded-lg">
-          <tbody>
-            {table
-              ? table.map((row, rowIndex) => {
-                  return (
-                    <tr key={rowIndex} className="flex">
-                      {row.map((cell, cellIndex) => {
-                        if (cell.isOpened) {
-                          return (
-                            <td
-                              key={cellIndex + 10}
-                              onClick={() => openCell(rowIndex, cellIndex)}
-                              className="w-5 h-5  flex items-center justify-center border border-white"
-                            >
-                              {cell.isBomb ? "B" : cell.minesNear}
-                            </td>
-                          );
-                        } else {
-                          return (
-                            <td
-                              key={cellIndex + 10}
-                              onClick={() => openCell(rowIndex, cellIndex)}
-                              className="bg-green-500 w-5 h-5 border border-white flex items-center justify-center"
-                            ></td>
-                          );
-                        }
-                      })}
-                    </tr>
-                  );
-                })
-              : ""}
-          </tbody>
-        </table>
+    <main className="text-center bg-lime-300 w-full h-[100vh] flex flex-col items-center justify-center">
+      <h1 className="text-5xl mb-24 text-blue-500 font-extrabold">
+        Minesweeper
+      </h1>
+      <div className="text-green-500 flex items-center justify-center">
+        <CreationForm generateTable={generateTable} />
+        <div>
+          <table className="rounded-lg">
+            <tbody>
+              {table
+                ? table.map((row, rowIndex) => {
+                    return (
+                      <tr key={rowIndex} className="flex">
+                        {row.map((cell, cellIndex) => {
+                          if (cell.isOpened) {
+                            return (
+                              <td
+                                key={cellIndex + 10}
+                                onClick={() =>
+                                  isOngoing && openCell(rowIndex, cellIndex)
+                                }
+                                className={`w-8 h-8 ${
+                                  cell.isBomb && "bg-red-500 text-black"
+                                } flex items-center justify-center border border-white`}
+                              >
+                                {cell.isBomb ? <FaBomb /> : cell.minesNear}
+                              </td>
+                            );
+                          } else {
+                            return (
+                              <td
+                                key={cellIndex + 10}
+                                onClick={() =>
+                                  isOngoing && openCell(rowIndex, cellIndex)
+                                }
+                                className="bg-green-500 w-8 h-8 border border-white flex items-center justify-center"
+                              ></td>
+                            );
+                          }
+                        })}
+                      </tr>
+                    );
+                  })
+                : ""}
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
+    </main>
   );
 }
 
-function generateRow(size: number): Row {
+function generateRow(cols: number): Row {
   const row: Cell[] = [];
-  for (let i = 0; i < size; i++) {
+  for (let i = 0; i < cols; i++) {
     const newCell = generateCell();
     row.push(newCell);
   }
@@ -139,6 +148,18 @@ function countNearBombs(table: Table, rowIndex: number, cellIndex: number) {
   });
 
   return minesNear;
+}
+
+function showBombs(table: Table) {
+  const newTable = [...table];
+  for (let i = 0; i < newTable.length; i++) {
+    for (let j = 0; j < newTable[i].length; j++) {
+      if (newTable[i][j].isBomb) {
+        newTable[i][j].isOpened = true;
+      }
+    }
+  }
+  return newTable;
 }
 
 export default App;
