@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import CreationForm from "./components/CreationForm";
 import CellComponent from "./components/CellComponent";
+import GameData from "./components/GameData";
 
 export type Cell = {
   isOpened: boolean;
@@ -17,16 +18,26 @@ type Table = Row[];
 function App() {
   const [table, setTable] = useState<Table>([]);
   const [isOngoing, setIsOngoing] = useState<boolean>(false);
+  const [minesCount, setMinesCount] = useState<number>(0);
+  const [flagsCount, setFlagsCount] = useState<number>(0);
+  const [timer, setTimer] = useState<number>(0);
 
   function generateTable(rows: number, cols: number) {
     setTable([]);
     const initialTable: Table = [];
+    setMinesCount(0);
     for (let i = 0; i < rows; i++) {
       const row = generateRow(cols);
       initialTable.push(row);
+      for (let j = 0; j < rows; j++) {
+        if (row[j].isBomb) {
+          setMinesCount((mines) => ++mines);
+        }
+      }
     }
-    setTable(initialTable);
     setIsOngoing(true);
+    setTimer(0);
+    setTable(initialTable);
   }
 
   function openCell(rowIndex: number, cellIndex: number) {
@@ -52,10 +63,29 @@ function App() {
     if (newTable[rowIndex][cellIndex]) {
       const newCell = newTable[rowIndex][cellIndex];
       newCell.isFlagged = !newCell.isFlagged;
+      if (newCell.isFlagged) {
+        setFlagsCount((flagsCount) => ++flagsCount);
+      } else {
+        setFlagsCount((flagsCount) => --flagsCount);
+      }
       newTable[rowIndex][cellIndex] = newCell;
       setTable(newTable);
     }
   }
+
+  useEffect(() => {
+    let interval: number;
+    if (isOngoing) {
+      interval = setInterval(() => {
+        setTimer((timer) => timer + 1);
+      }, 1000);
+    }
+    return () => {
+      if (interval) {
+        clearInterval(interval);
+      }
+    };
+  }, [isOngoing, timer]);
 
   return (
     <main className="text-center bg-lime-300 w-full h-[100vh] flex flex-col items-center justify-center">
@@ -65,6 +95,12 @@ function App() {
       <div className="text-green-500 flex items-center justify-center">
         <CreationForm generateTable={generateTable} />
         <div>
+          <GameData
+            timer={timer}
+            flagsCount={flagsCount}
+            minesCount={minesCount}
+            isOngoing={isOngoing}
+          />
           <table
             className="rounded-lg"
             onContextMenu={(e) => {
@@ -85,6 +121,7 @@ function App() {
                               setFlag={setFlag}
                               openCell={openCell}
                               isOngoing={isOngoing}
+                              key={rowIndex * row.length + cellIndex}
                             />
                           );
                         })}

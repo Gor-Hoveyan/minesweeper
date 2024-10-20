@@ -23,7 +23,6 @@ export default function CellComponent({
     <>
       {cell.isOpened ? (
         <td
-          key={cellIndex + 10}
           onClick={() => isOngoing && openCell(rowIndex, cellIndex)}
           className={`w-8 h-8 ${
             cell.isBomb && "bg-red-500 text-black"
@@ -34,7 +33,6 @@ export default function CellComponent({
         </td>
       ) : (
         <td
-          key={cellIndex + 10}
           onClick={() => isOngoing && openCell(rowIndex, cellIndex)}
           className="bg-green-500 w-8 h-8 border border-white flex items-center justify-center"
           onContextMenu={() => setFlag(rowIndex, cellIndex)}
