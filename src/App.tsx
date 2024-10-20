@@ -24,6 +24,10 @@ function App() {
 
   function generateTable(rows: number, cols: number) {
     setTable([]);
+    setFlagsCount(0);
+    setMinesCount(0);
+    setIsOngoing(false);
+    setTimer(0);
     const initialTable: Table = [];
     setMinesCount(0);
     for (let i = 0; i < rows; i++) {
@@ -44,7 +48,6 @@ function App() {
     const newTable = [...table];
     if (newTable[rowIndex][cellIndex]) {
       const newCell = newTable[rowIndex][cellIndex];
-
       if (!newCell.isBomb) {
         newCell.minesNear = countNearBombs(newTable, rowIndex, cellIndex);
       } else {
@@ -55,7 +58,40 @@ function App() {
       newCell.isOpened = true;
       newTable[rowIndex][cellIndex] = newCell;
       setTable(newTable);
+      if (newCell.minesNear === 0 && !newCell.isBomb) {
+        setTimeout(() => {
+          openNearCells(rowIndex, cellIndex);
+        }, 20);
+      }
     }
+  }
+
+  function openNearCells(rowIndex: number, cellIndex: number) {
+    const directions = [
+      [-1, -1],
+      [-1, 0],
+      [-1, 1],
+      [0, -1],
+      [0, 1],
+      [1, -1],
+      [1, 0],
+      [1, 1],
+    ];
+
+    directions.forEach(([rowOffset, cellOffset]) => {
+      const row = rowIndex + rowOffset;
+      const cell = cellIndex + cellOffset;
+      if (
+        table &&
+        table[row] &&
+        table[row][cell] &&
+        row >= 0 &&
+        cell >= 0 &&
+        !table[row][cell].isOpened
+      ) {
+        openCell(row, cell);
+      }
+    });
   }
 
   function setFlag(rowIndex: number, cellIndex: number) {
@@ -92,7 +128,7 @@ function App() {
       <h1 className="text-5xl mb-24 text-blue-500 font-extrabold">
         Minesweeper
       </h1>
-      <div className="text-green-500 flex items-center justify-center">
+      <div className="text-green-500 flex items-center justify-center select-none">
         <CreationForm generateTable={generateTable} />
         <div>
           <GameData

@@ -25,8 +25,9 @@ export default function CellComponent({
         <td
           onClick={() => isOngoing && openCell(rowIndex, cellIndex)}
           className={`w-8 h-8 ${
-            cell.isBomb && "bg-red-500 text-black"
-          } flex items-center justify-center border border-white`}
+            cell.isBomb &&
+            "bg-red-500 text-black  hover:bg-red-600 duration-300"
+          } flex items-center justify-center border border-white hover:bg-lime-400 hover:text-green-600 duration-300`}
           onContextMenu={() => setFlag(rowIndex, cellIndex)}
         >
           {cell.isBomb ? <FaBomb /> : cell.minesNear}
@@ -34,7 +35,7 @@ export default function CellComponent({
       ) : (
         <td
           onClick={() => isOngoing && openCell(rowIndex, cellIndex)}
-          className="bg-green-500 w-8 h-8 border border-white flex items-center justify-center"
+          className="bg-green-500 w-8 h-8 border border-white flex items-center justify-center hover:bg-green-600 duration-300"
           onContextMenu={() => setFlag(rowIndex, cellIndex)}
         >
           {cell.isFlagged ? <IoFlagSharp color="red" /> : ""}

@@ -29,6 +29,7 @@ export default function CreationForm({ generateTable }: ComponentProps) {
           {...register("rows", {
             min: { value: 3, message: "Rows can't be less than 3" },
             max: { value: 24, message: "Rows can't be more than 24" },
+            required: "This field is required",
           })}
           placeholder="Rows"
           className="my-1 p-2 rounded-md text-black"
@@ -43,6 +44,7 @@ export default function CreationForm({ generateTable }: ComponentProps) {
           {...register("cols", {
             min: { value: 3, message: "Columns can't be less than 3" },
             max: { value: 24, message: "Columns can't be more than 24" },
+            required: "This field is required",
           })}
           placeholder="Columns"
           className="my-1 p-2 rounded-md text-black"
@@ -62,7 +64,7 @@ export default function CreationForm({ generateTable }: ComponentProps) {
         ) : (
           ""
         )}
-        <button className="bg-blue-500 rounded-md p-2 my-1 text-white">
+        <button className="bg-blue-500 rounded-md p-2 my-1 text-white hover:bg-blue-600 duration-300">
           Generate field
         </button>
       </form>
