@@ -1,10 +1,9 @@
 import { useState } from "react";
-import { FaBomb } from "react-icons/fa";
-import { IoFlagSharp } from "react-icons/io5";
 import "./App.css";
 import CreationForm from "./components/CreationForm";
+import CellComponent from "./components/CellComponent";
 
-type Cell = {
+export type Cell = {
   isOpened: boolean;
   isFlagged: boolean;
   minesNear: number;
@@ -78,43 +77,16 @@ function App() {
                     return (
                       <tr key={rowIndex} className="flex">
                         {row.map((cell, cellIndex) => {
-                          if (cell.isOpened) {
-                            return (
-                              <td
-                                key={cellIndex + 10}
-                                onClick={() =>
-                                  isOngoing && openCell(rowIndex, cellIndex)
-                                }
-                                className={`w-8 h-8 ${
-                                  cell.isBomb && "bg-red-500 text-black"
-                                } flex items-center justify-center border border-white`}
-                                onContextMenu={() =>
-                                  setFlag(rowIndex, cellIndex)
-                                }
-                              >
-                                {cell.isBomb ? <FaBomb /> : cell.minesNear}
-                              </td>
-                            );
-                          } else {
-                            return (
-                              <td
-                                key={cellIndex + 10}
-                                onClick={() =>
-                                  isOngoing && openCell(rowIndex, cellIndex)
-                                }
-                                className="bg-green-500 w-8 h-8 border border-white flex items-center justify-center"
-                                onContextMenu={() =>
-                                  setFlag(rowIndex, cellIndex)
-                                }
-                              >
-                                {cell.isFlagged ? (
-                                  <IoFlagSharp color="red" />
-                                ) : (
-                                  ""
-                                )}
-                              </td>
-                            );
-                          }
+                          return (
+                            <CellComponent
+                              cell={cell}
+                              cellIndex={cellIndex}
+                              rowIndex={rowIndex}
+                              setFlag={setFlag}
+                              openCell={openCell}
+                              isOngoing={isOngoing}
+                            />
+                          );
                         })}
                       </tr>
                     );
