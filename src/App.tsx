@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./App.css";
 import CreationForm from "./components/CreationForm";
 import CellComponent from "./components/CellComponent";
@@ -20,14 +20,18 @@ function App() {
   const [isOngoing, setIsOngoing] = useState<boolean>(false);
   const [minesCount, setMinesCount] = useState<number>(0);
   const [flagsCount, setFlagsCount] = useState<number>(0);
+  const [isWin, setIsWin] = useState<boolean>(false);
   const [timer, setTimer] = useState<number>(0);
+  const openedCells = useRef(0);
 
   function generateTable(rows: number, cols: number) {
+    openedCells.current = 0;
     setTable([]);
     setFlagsCount(0);
     setMinesCount(0);
     setIsOngoing(false);
     setTimer(0);
+    setIsWin(false);
     const initialTable: Table = [];
     setMinesCount(0);
     for (let i = 0; i < rows; i++) {
@@ -46,7 +50,10 @@ function App() {
 
   function openCell(rowIndex: number, cellIndex: number) {
     const newTable = [...table];
-    if (newTable[rowIndex][cellIndex]) {
+    if (
+      newTable[rowIndex][cellIndex] &&
+      !newTable[rowIndex][cellIndex].isFlagged
+    ) {
       const newCell = newTable[rowIndex][cellIndex];
       if (!newCell.isBomb) {
         newCell.minesNear = countNearBombs(newTable, rowIndex, cellIndex);
@@ -56,6 +63,7 @@ function App() {
       }
 
       newCell.isOpened = true;
+      openedCells.current++;
       newTable[rowIndex][cellIndex] = newCell;
       setTable(newTable);
       if (newCell.minesNear === 0 && !newCell.isBomb) {
@@ -63,6 +71,10 @@ function App() {
           openNearCells(rowIndex, cellIndex);
         }, 20);
       }
+    }
+    if (table.length * table[0].length - minesCount === openedCells.current) {
+      setIsOngoing(false);
+      setIsWin(true);
     }
   }
 
@@ -124,7 +136,7 @@ function App() {
   }, [isOngoing, timer]);
 
   return (
-    <main className="text-center bg-lime-300 w-full h-[100vh] flex flex-col items-center justify-center">
+    <main className="text-center bg-lime-300 w-full min-h-[100vh] max-h-fit flex flex-col items-center justify-center">
       <h1 className="text-5xl mb-24 text-blue-500 font-extrabold">
         Minesweeper
       </h1>
@@ -151,6 +163,7 @@ function App() {
                         {row.map((cell, cellIndex) => {
                           return (
                             <CellComponent
+                              isWin={isWin}
                               cell={cell}
                               cellIndex={cellIndex}
                               rowIndex={rowIndex}
