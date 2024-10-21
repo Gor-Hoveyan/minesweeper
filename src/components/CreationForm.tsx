@@ -18,7 +18,7 @@ export default function CreationForm({ generateTable }: ComponentProps) {
     mode: "onChange",
   });
   const onSubmit: SubmitHandler<FormValues> = (data) => {
-    generateTable(data.rows, data.cols);
+    generateTable(Number(data.rows), Number(data.cols));
   };
   return (
     <div className="mr-5">
@@ -27,7 +27,7 @@ export default function CreationForm({ generateTable }: ComponentProps) {
           type="number"
           {...register("rows", {
             min: { value: 3, message: "Rows can't be less than 3" },
-            max: { value: 24, message: "Rows can't be more than 24" },
+            max: { value: 30, message: "Rows can't be more than 30" },
             required: "This field is required",
           })}
           placeholder="Rows"
@@ -42,7 +42,7 @@ export default function CreationForm({ generateTable }: ComponentProps) {
           type="number"
           {...register("cols", {
             min: { value: 3, message: "Columns can't be less than 3" },
-            max: { value: 24, message: "Columns can't be more than 24" },
+            max: { value: 20, message: "Columns can't be more than 20" },
             required: "This field is required",
           })}
           placeholder="Columns"

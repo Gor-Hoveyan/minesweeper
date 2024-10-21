@@ -12,6 +12,7 @@ interface ComponentProps {
   cell: Cell;
   setFlag: (rowIndex: number, cellIndex: number) => void;
   isWin: boolean;
+  cols: number;
 }
 
 export default function CellComponent({
@@ -22,13 +23,20 @@ export default function CellComponent({
   cell,
   setFlag,
   isWin,
+  cols,
 }: ComponentProps) {
   return (
     <>
       {cell.isOpened || isWin ? (
         <td
           onClick={() => isOngoing && openCell(rowIndex, cellIndex)}
-          className={`lg:w-8 lg:h-8 md:w-6 md:h-6 h-4 w-4 text-xs md:text-base lg:text-lg ${
+          className={`md:w-6 md:h-6 ${
+            cols > 17
+              ? "h-4 w-4 lg:w-7 lg:h-7 md:text-base"
+              : cols > 12
+              ? "h-5 w-5 lg:w-8 lg:h-8 md:text-base"
+              : "h-6 w-6 lg:w-8 lg:h-8 md:text-base"
+          } text-xs ${
             cell.isBomb && !isWin
               ? "bg-red-500 text-black  hover:bg-red-600 duration-300"
               : "text-blue-500"
@@ -50,7 +58,13 @@ export default function CellComponent({
       ) : (
         <td
           onClick={() => isOngoing && openCell(rowIndex, cellIndex)}
-          className="bg-green-500 lg:w-8 lg:h-8 sm:w-4 sm:h-4 md:w-6 md:h-6 h-4 w-4 md:text-base lg:text-lg border border-white flex items-center justify-center hover:bg-green-600 duration-300"
+          className={`bg-green-500 lg:w-8 lg:h-8 sm:w-4 sm:h-4 md:w-6 md:h-6 ${
+            cols > 17
+              ? "h-4 w-4 lg:w-7 lg:h-7 md:text-base"
+              : cols > 12
+              ? "h-5 w-5 lg:w-8 lg:h-8 md:text-base"
+              : "h-6 w-6 lg:w-8 lg:h-8 md:text-base"
+          } border border-white flex items-center justify-center hover:bg-green-600 duration-300`}
           onContextMenu={() => isOngoing && setFlag(rowIndex, cellIndex)}
         >
           {cell.isFlagged ? <IoFlagSharp color="red" /> : ""}
