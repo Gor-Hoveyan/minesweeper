@@ -2,11 +2,13 @@ import { useEffect, useRef, useState } from "react";
 import "./App.css";
 import CreationForm from "./components/CreationForm";
 import CellComponent from "./components/CellComponent";
-import GameData from "./components/GameData";
+import GameState from "./components/GameState";
 import showBombs from "./utils/functions/showBombs";
 import generateRow from "./utils/functions/generateRow";
 import countNearBombs from "./utils/functions/countNearBombs";
 import { Table } from "./utils/types/tableTypes";
+import logRoundData from "./utils/functions/logRoundData";
+import GameHistory from "./components/GameHistory";
 
 function App() {
   const [table, setTable] = useState<Table>([]);
@@ -68,6 +70,7 @@ function App() {
     if (table.length * table[0].length - minesCount === openedCells.current) {
       setIsOngoing(false);
       setIsWin(true);
+      logRoundData(timer, table.length, table[0].length, minesCount);
     }
   }
 
@@ -136,7 +139,7 @@ function App() {
       <div className="text-green-500 flex items-center justify-center select-none">
         <CreationForm generateTable={generateTable} />
         <div>
-          <GameData
+          <GameState
             timer={timer}
             flagsCount={flagsCount}
             minesCount={minesCount}
@@ -175,6 +178,7 @@ function App() {
           </table>
         </div>
       </div>
+      <GameHistory />
     </main>
   );
 }

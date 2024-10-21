@@ -9,7 +9,7 @@ import { IoFlagSharp } from "react-icons/io5";
 import { GiSandsOfTime } from "react-icons/gi";
 import transformTime from "../utils/functions/transformTime";
 
-export default function GameData({
+export default function GameState({
   isOngoing,
   minesCount,
   flagsCount,
