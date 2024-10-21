@@ -1,7 +1,7 @@
-import { Cell } from "../App";
 import { FaBomb } from "react-icons/fa";
 import { IoFlagSharp } from "react-icons/io5";
 import { RiFlowerFill } from "react-icons/ri";
+import { Cell } from "../utils/types/tableTypes";
 
 interface ComponentProps {
   cellIndex: number;

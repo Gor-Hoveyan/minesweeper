@@ -7,7 +7,6 @@ interface ComponentProps {
 type FormValues = {
   rows: number;
   cols: number;
-  mines: number;
 };
 
 export default function CreationForm({ generateTable }: ComponentProps) {
@@ -51,16 +50,6 @@ export default function CreationForm({ generateTable }: ComponentProps) {
         />
         {errors.cols?.message ? (
           <p className="text-red-500">{errors.cols.message}</p>
-        ) : (
-          ""
-        )}
-        <input
-          type="number"
-          placeholder="Mines"
-          className="my-1 p-2 rounded-md text-black"
-        />
-        {errors.mines?.message ? (
-          <p className="text-red-500">{errors.mines.message}</p>
         ) : (
           ""
         )}
