@@ -30,7 +30,7 @@ export default function CellComponent({
       {cell.isOpened || isWin ? (
         <td
           onClick={() => isOngoing && openCell(rowIndex, cellIndex)}
-          className={`md:w-6 md:h-6 ${
+          className={` lg:w-8 lg:h-8 sm:w-4 sm:h-4 md:w-6 md:h-6  ${
             cols > 17
               ? "h-4 w-4 lg:w-7 lg:h-7 md:text-base"
               : cols > 12
