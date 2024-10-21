@@ -133,12 +133,12 @@ function App() {
 
   return (
     <main className="text-center bg-lime-300 w-full min-h-[100vh] max-h-fit flex flex-col items-center justify-center">
-      <h1 className="text-5xl mb-24 text-blue-500 font-extrabold">
+      <h1 className="text-5xl mb-14 text-blue-500 font-extrabold">
         Minesweeper
       </h1>
-      <div className="text-green-500 flex items-center justify-center select-none">
+      <div className="text-green-500 lg:flex lg:items-center justify-center select-none">
         <CreationForm generateTable={generateTable} />
-        <div>
+        <div className="sm:mt-5 lg:mt-0">
           <GameState
             timer={timer}
             flagsCount={flagsCount}
